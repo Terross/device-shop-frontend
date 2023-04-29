@@ -77,7 +77,7 @@ export default defineComponent({
             console.log('Registration clicked')
         },
         logIn() {
-            console.log('LogIn')
+            this.$router.push('/sign-in')
         }
     }
 })
