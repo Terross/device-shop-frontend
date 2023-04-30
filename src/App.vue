@@ -5,15 +5,31 @@
         color="primary"
         density="compact"
       >
-        <template v-slot:prepend>
-          <v-app-bar-nav-icon></v-app-bar-nav-icon>
-        </template>
-
+        <v-btn
+         icon="mdi-format-list-bulleted"
+         v-if="isAuthorized"
+         @click="toDeviceList"></v-btn>
         <v-app-bar-title>Device-shop</v-app-bar-title>
-
-        <template v-slot:append>
-          <v-btn icon="mdi-vuetify"></v-btn>
-        </template>
+        <v-btn
+         icon="mdi-cart"
+         v-if="isAuthorized"
+         @click="toCart"></v-btn>
+        <v-btn
+         icon="mdi-compare"
+         v-if="isAuthorized"
+         @click="toComparison"></v-btn>
+        <v-btn
+         icon="mdi-shield-crown"
+         v-if="isAdmin && isAuthorized"
+         @click="toAdminPanel"></v-btn>
+        <v-btn
+         icon="mdi-face-man-profile"
+         v-if="!isAdmin && isAuthorized"
+         @click="toProfile"></v-btn>
+        <v-btn
+         icon="mdi-logout"
+         v-if="isAuthorized"
+         @click="logOut"></v-btn>
       </v-app-bar>
       <v-main>
         <router-view></router-view>
@@ -24,13 +40,10 @@
 
 <script>
 import { useUserStore } from './store'
-// import { mdiAccountAlertOutline } from '@mdi/js';
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'App',
-  components: {
- 
-  },
   beforeMount() {
     const userStore = useUserStore()
     if (userStore.email === "") {
@@ -38,8 +51,40 @@ export default {
     } else {
       this.$router.replace('/devices')
     }
+  },
+  computed: {
+    isAuthorized() {
+      const userStore = useUserStore()
+      return userStore.email !== ""
+    },
+    isAdmin() {
+      const userStore = useUserStore()
+      return userStore.role === "ADMIN"
+    }
+  },
+  methods: {
+    toDeviceList() {
+      this.$router.replace('/devices')
+    },
+    toComparison() {
+      this.$router.replace('/comparison')
+    },
+    toCart() {
+      this.$router.replace('/order')
+    },
+    toProfile() {
+      this.$router.replace('/profile')
+    },
+    toAdminPanel() {
+      this.$router.replace('/admin')
+    },
+    logOut() {
+      const userStore = useUserStore()
+      userStore.email = ""
+      this.$router.replace('/sign-in')
+    }
   }
-}
+})
 </script>
 
 <style>

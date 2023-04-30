@@ -47,7 +47,6 @@
 import { defineComponent } from "vue"
 import { HTTP } from '../axios.js'
 import { useUserStore } from '../store.js'
-import { useDeviceStore } from '../store.js'
 
 export default defineComponent({
     data() {
@@ -65,23 +64,21 @@ export default defineComponent({
         },
         logIn() {
             const userStore = useUserStore()
-            const deviceStore = useDeviceStore()
             HTTP.post('login/sign/in', {
                 email: this.email,
                 password: this.password
             })
             .then(response => {
                 const data = response.data
-                console.log(data)
                 userStore.email = data.email
                 userStore.role = data.userRole
+                userStore.id = data.id
             })
 
-            HTTP.get('/device', { headers: {'USER-TOKEN': 'token'} })
+            HTTP.get('/user')
             .then(response => {
-                deviceStore.devices = response.data
+                userStore.users = response.data
             })
-
             this.$router.replace('/devices')
         }
     }

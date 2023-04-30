@@ -17,10 +17,15 @@
         </v-card-text>
         <v-card-actions>
             <v-col>
-                <v-btn color="primary">
+            <v-btn
+                 color="primary"
+                 @click="addToCart">
                 Добавить в корзину
             </v-btn>
-            <v-btn color="primary">
+            <v-btn
+             color="primary"
+             @click="addToComparison"
+             :disabled="!isComparisonEmpty">
                 Добавить в сравнение
             </v-btn>
             </v-col>
@@ -30,6 +35,7 @@
 </template>
 
 <script>
+import { useComporationStore, useOrderStore } from '@/store'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -37,7 +43,32 @@ export default defineComponent({
         device: Object
     },
     methods: {
-    
+        addToCart() {
+            const orderStore = useOrderStore()
+            const count = orderStore.devices.has(this.device.id) ? orderStore.devices.get(this.device.id) : 0
+            orderStore.devices.set(this.device.id, {
+                count: count + 1,
+                device: this.device
+            })
+        },
+        addToComparison() {
+            const comparisonStore = useComporationStore()
+            if (comparisonStore.firstDevice === null) {
+                comparisonStore.firstDevice = this.device
+            } else if (comparisonStore.secondDevice === null) {
+                comparisonStore.secondDevice = this.device
+            }
+        }
+    },
+    computed: {
+        isComparisonEmpty() {
+            const comparisonStore = useComporationStore()
+            if (comparisonStore.firstDevice === null || comparisonStore.secondDevice === null) {
+                return true
+            } else {
+                return false
+            }
+        }
     }
 })
 </script>

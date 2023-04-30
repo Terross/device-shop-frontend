@@ -4,7 +4,9 @@ export const useUserStore = defineStore({
     id: 'user',
     state: () => ({
         email: "",
-        role: ""
+        role: "",
+        id: "",
+        users: []
     })
 })
 
@@ -18,6 +20,15 @@ export const useDeviceStore = defineStore({
 export const useOrderStore = defineStore({
     id: 'order',
     state: () => ({
-        
+        devices: new Map(),
+        orders: []
+    })
+})
+
+export const useComporationStore = defineStore({
+    id: 'comporation',
+    state: () => ({
+        firstDevice: null,
+        secondDevice: null
     })
 })
